@@ -1,35 +1,81 @@
+#
+#   BUILDING THE SQLCOMMANDS.SQL FILE
+#
+
 from urllib.request import urlopen
 import json
 
-# Defining the game IDs for the games that we want to include in the database
-# The database is based on the open API of speedrun.com, where each game has
-# an 8-character long ID
-#games = ["o1y9526q"]
-games = ["nd2egvd0","4d79zg17","9d3rkgdl","o1y9526q"]
+# Defining which games we want to include in the database
+# speedrun.com uses 8-characters long ID values for each game
+games = ["nd2egvd0", "4d79zg17", "9d3rkgdl", "o1y9526q", "m1mxemj6"]
 
+# CREATE TABLE COMMANDS
 
-
-# GAMES
-
-sql_file_name = "insertdata.sql"
+sql_file_name = "sqlcommands.sql"
 sql_file = open(sql_file_name,'w',encoding="utf-8")
 
+initialize = open("initialize.sql", "r")
+r = initialize.read()
+for row in r:
+    sql_file.write(row)
+initialize.close()
+
+
+# PLATFORM
+platform_query = "\n\nINSERT INTO Platform VALUES"
+url = "https://www.speedrun.com/api/v1/platforms?max=200"
+response = urlopen(url)
+data_json = json.loads(response.read())
+platforms_json = data_json.get("data")
+platforms = []
+for p_json in platforms_json:
+    platform_id = p_json.get("id")
+    platform_name = p_json.get("name")
+    platforms.append(f"(\"{platform_id}\",\"{platform_name}\")")
+
+# SQL query for Platform
+platform_query = "\n\nINSERT INTO Platform VALUES"
+for value in platforms:
+    platform_query += "\n\t" + value + ","
+platform_query = platform_query[:-1]
+platform_query += ";\n"
+sql_file.write(platform_query)
+platform_query = ""
+
+
 game_values = []
+game_platforms = []
 for game in games:
     url = "https://www.speedrun.com/api/v1/games/" + game
     response = urlopen(url)
     data_json = json.loads(response.read())
     game_name = data_json.get("data").get("names").get("international")
+    game_platforms_json = data_json.get("data").get("platforms")
+    s = ""
+    for game_platform in game_platforms_json:
+        game_platforms.append(f"(\"{game_platform}\",\"{game}\")")
+    game_plats = s[:-1]
     game_values.append(f"(\"{game}\",\"{game_name}\")")
 
-# SQL query
-game_query = "INSERT INTO Game VALUES"
+# SQL query for GAME
+game_query = "\n\nINSERT INTO Game VALUES"
 for value in game_values:
     game_query += "\n\t" + value + ","
 game_query = game_query[:-1]
 game_query += ";\n"
 sql_file.write(game_query)
 game_query = ""
+
+# SQL query for ISPLATFORMOF
+game_platform_query = "\n\nINSERT INTO IsPlatformOf VALUES"
+for value in game_platforms:
+    game_platform_query += "\n\t" + value + ","
+game_platform_query = game_platform_query[:-1]
+game_platform_query += ";\n"
+sql_file.write(game_platform_query)
+game_platform_query = ""
+
+
 
 perform = []
 category_values = []
@@ -74,7 +120,7 @@ for game in games:
 
 
 # SQL query for categories
-category_query = "INSERT INTO Category VALUES"
+category_query = "\nINSERT INTO Category VALUES"
 for value in category_values:
     category_query += "\n\t" + value + ","
 category_query = category_query[:-1]
@@ -105,7 +151,7 @@ for player in player_dictionary:
     player_values.append(f"(\"{player}\",\"{player_dictionary[player]}\")")
 
 # SQL query
-player_query = "INSERT INTO Player VALUES"
+player_query = "\nINSERT INTO Player VALUES"
 for value in player_values:
     player_query += "\n\t" + value + ","
 player_query = player_query[:-1]
@@ -114,7 +160,7 @@ sql_file.write(player_query)
 player_query = ""
 
 # SQL query for runs
-run_query = "INSERT INTO Run VALUES"
+run_query = "\nINSERT INTO Run VALUES"
 for value in run_values:
     run_query += "\n\t" + value + ","
 run_query = run_query[:-1]
@@ -124,7 +170,7 @@ run_query = ""
 
 
 ## PERFORM
-perform_query = "INSERT INTO Perform VALUES"
+perform_query = "\nINSERT INTO Perform VALUES"
 for value in perform:
     perform_query += "\n\t" + value + ","
 perform_query = perform_query[:-1]
@@ -133,7 +179,7 @@ sql_file.write(perform_query)
 perform_query = ""
 
 # SQL query for moderators
-moderator_query = "INSERT INTO Moderator VALUES"
+moderator_query = "\nINSERT INTO Moderator VALUES"
 for value in moderator_values:
     moderator_query += "\n\t" + value + ","
 moderator_query = moderator_query[:-1]
