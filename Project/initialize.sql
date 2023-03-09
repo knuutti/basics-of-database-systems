@@ -5,7 +5,7 @@ CREATE TABLE Platform (
 
 CREATE TABLE Player (
 	playerID CHAR(8) NOT NULL PRIMARY KEY,
-	playerName VARCHAR(50)
+	playerName VARCHAR(50) UNIQUE
 );
 
 CREATE TABLE Game (
@@ -28,7 +28,7 @@ CREATE TABLE Category (
 );
 
 CREATE TABLE Moderator (
-	role VARCHAR(20),
+	role VARCHAR(20) DEFAULT "moderator",
 	FK_gameID CHAR(8) NOT NULL,
 	FK_playerID CHAR(8) NOT NULL,
 	FOREIGN KEY (FK_gameID) REFERENCES Game (gameID) ON DELETE CASCADE,
@@ -37,7 +37,7 @@ CREATE TABLE Moderator (
 
 CREATE TABLE Run (
 	runID CHAR(8) NOT NULL PRIMARY KEY,
-	runTime REAL NOT NULL,
+	runTime REAL NOT NULL CHECK (runTime > 0),
 	runDate CHAR(10),
 	FK_categoryID CHAR(8) NOT NULL,
 	FOREIGN KEY (FK_categoryID) REFERENCES Category (categoryID) ON DELETE CASCADE
