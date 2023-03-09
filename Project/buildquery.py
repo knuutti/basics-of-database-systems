@@ -7,7 +7,7 @@ import json
 
 # Defining which games we want to include in the database
 # speedrun.com uses 8-characters long ID values for each game
-games = ["nd2egvd0", "4d79zg17", "9d3rkgdl", "o1y9526q", "m1mxemj6"]
+games = ["nd2egvd0", "4d79zg17", "9d3rkgdl", "o1y9526q", "y655j36e", "w6j7046j", "kdkm921m", "k6qwo06g"]
 
 # CREATE TABLE COMMANDS
 
@@ -116,7 +116,7 @@ for game in games:
                 player_dictionary[player_id] = player_name
 
                 run_time = run.get("times").get("primary_t")
-                run_values.append(f"(\"{run_id}\",{run_time},{run_date},\"{category_id}\",\"{player_id}\")")
+                run_values.append(f"(\"{run_id}\",{run_time},{run_date},\"{category_id}\")")
 
 
 # SQL query for categories

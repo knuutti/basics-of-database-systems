@@ -40,9 +40,7 @@ CREATE TABLE Run (
 	runTime REAL NOT NULL,
 	runDate CHAR(10),
 	FK_categoryID CHAR(8) NOT NULL,
-	FK_playerID CHAR(8) NOT NULL,
-	FOREIGN KEY (FK_categoryID) REFERENCES Category (categoryID) ON DELETE CASCADE,
-	FOREIGN KEY (FK_playerID) REFERENCES Player (playerID) ON DELETE CASCADE
+	FOREIGN KEY (FK_categoryID) REFERENCES Category (categoryID) ON DELETE CASCADE
 );
 
 CREATE TABLE Perform (
@@ -51,3 +49,11 @@ CREATE TABLE Perform (
 	FOREIGN KEY (FK_runID) REFERENCES Run (runID) ON DELETE CASCADE,
 	FOREIGN KEY (FK_playerID) REFERENCES Player (playerID) ON DELETE CASCADE
 );
+
+CREATE INDEX PlayerIndex ON Player(playerID);
+CREATE INDEX GameIndex ON Game(gameID);
+CREATE INDEX CategoryIndex ON Category(categoryID);
+CREATE INDEX RunIndex ON Run(runID);
+CREATE INDEX PlatformIndex ON Platform(platformID);
+CREATE INDEX PerformIndex ON Perform(FK_runID,FK_playerID);
+CREATE INDEX IsPlatformIndex ON IsPlatformOf(FK_platformID,FK_gameID);
