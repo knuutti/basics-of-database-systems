@@ -5,12 +5,12 @@ CREATE TABLE Platform (
 
 CREATE TABLE Player (
 	playerID CHAR(8) NOT NULL PRIMARY KEY,
-	playerName VARCHAR(50) UNIQUE
+	playerName VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE Game (
 	gameID CHAR(8) NOT NULL PRIMARY KEY,
-	gameName VARCHAR(50)
+	gameName VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE IsPlatformOf (
@@ -55,5 +55,3 @@ CREATE INDEX GameIndex ON Game(gameID);
 CREATE INDEX CategoryIndex ON Category(categoryID);
 CREATE INDEX RunIndex ON Run(runID);
 CREATE INDEX PlatformIndex ON Platform(platformID);
-CREATE INDEX PerformIndex ON Perform(FK_runID,FK_playerID);
-CREATE INDEX IsPlatformIndex ON IsPlatformOf(FK_platformID,FK_gameID);
